@@ -15,6 +15,7 @@
 
 from typing import List
 
+from PIL import Image, ImageDraw
 # import cv2
 import numpy as np
 from object_detector import Detection
@@ -44,6 +45,14 @@ def visualize(
     start_point = detection.bounding_box.left, detection.bounding_box.top
     end_point = detection.bounding_box.right, detection.bounding_box.bottom
     # cv2.rectangle(image, start_point, end_point, _TEXT_COLOR, 3)
+    
+    
+    pil_image = Image.fromarray(image)
+    draw = ImageDraw.Draw(pil_im)
+    draw.ellipse((start_point, end_point),outline=_TEXT_COLOR)
+    image = np.array(pil_image)
+    
+    
 
     # Draw label and score
     category = detection.categories[0]

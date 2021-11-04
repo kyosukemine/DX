@@ -49,7 +49,7 @@ def visualize(
     
     pil_image = Image.fromarray(image)
     draw = ImageDraw.Draw(pil_image)
-    draw.ellipse((start_point, end_point),outline=_TEXT_COLOR)
+    draw.rectangle((start_point, end_point),outline=_TEXT_COLOR)
     image = np.array(pil_image)
     
     

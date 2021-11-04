@@ -15,7 +15,7 @@
 
 from typing import List
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 # import cv2
 import numpy as np
 from object_detector import Detection

@@ -47,7 +47,7 @@ def visualize(
     # cv2.rectangle(image, start_point, end_point, _TEXT_COLOR, 3)
     
    
-    pil_image = Image.fromarray(image.T)
+    pil_image = Image.fromarray(image)
     # pil_image = ImageOps.mirror(pil_image)
     # pil_image = ImageOps.flip(pil_image)
     # pil_image = pil_image.rotate(90)
@@ -83,7 +83,6 @@ def visualize(
 
 
     image = np.array(pil_image)
-    image = image.T
     print("\n\n", class_name, start_point, end_point, end="\n\n")
     
   return image

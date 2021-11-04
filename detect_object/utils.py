@@ -70,7 +70,7 @@ def visualize(
     left, top = start_point
     txpos = (left, top-_FONT_SIZE-_FONT_THICKNESS//2)
     txw, txh = draw.textsize(text, font=font)
-    draw.rectangle([txpos, (left+txw, top)], outline=_TEXT_COLOR, fill=_TEXT_COLOR, width=_FONT_THICKNESS)
+    draw.rectangle([txpos, (left+txw, top-txh)], outline=_TEXT_COLOR, fill=_TEXT_COLOR, width=_FONT_THICKNESS)
     draw.text(txpos, text, font=font, fill=(0,0,0), size=_FONT_SIZE)
     
     

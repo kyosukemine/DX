@@ -42,8 +42,8 @@ def visualize(
   """
   for detection in detections:
     # Draw bounding_box
-    start_point = detection.bounding_box.left, detection.bounding_box.top
-    end_point = detection.bounding_box.right, detection.bounding_box.bottom
+    start_point = 350-detection.bounding_box.left, 350-detection.bounding_box.top
+    end_point = 350-detection.bounding_box.right, 350-detection.bounding_box.bottom
     # cv2.rectangle(image, start_point, end_point, _TEXT_COLOR, 3)
     
    

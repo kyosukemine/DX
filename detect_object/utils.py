@@ -74,7 +74,7 @@ def visualize(
     txpos = (left, top-_FONT_SIZE-_FONT_THICKNESS//2)
     txw, txh = draw.textsize(text, font=font)
     draw.rectangle([txpos, (left+txw, top-txh)], outline=_TEXT_COLOR, fill=_TEXT_COLOR, width=_FONT_THICKNESS)
-    draw.text((left+txw, top-txh), text, font=font, fill=(0,0,0), size=_FONT_SIZE)
+    draw.text((left, top-txh), text, font=font, fill=(255,255,255), size=_FONT_SIZE)
     
     # pil_image = ImageOps.mirror(pil_image)
     # pil_image = ImageOps.flip(pil_image)

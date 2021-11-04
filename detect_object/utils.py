@@ -15,7 +15,7 @@
 
 from typing import List
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 # import cv2
 import numpy as np
 from object_detector import Detection
@@ -48,6 +48,7 @@ def visualize(
     
     
     pil_image = Image.fromarray(image)
+    pil_image = ImageOps.flip(pil_image)
     draw = ImageDraw.Draw(pil_image)
     draw.rectangle((start_point, end_point),outline=_TEXT_COLOR)
     
@@ -73,7 +74,7 @@ def visualize(
     draw.rectangle([txpos, (left+txw, top-txh)], outline=_TEXT_COLOR, fill=_TEXT_COLOR, width=_FONT_THICKNESS)
     draw.text(txpos, text, font=font, fill=(0,0,0), size=_FONT_SIZE)
     
-    
+    pil_image = ImageOps.flip(pil_image)
     image = np.array(pil_image)
     print("\n\n", class_name, start_point, end_point, end="\n\n")
     

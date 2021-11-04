@@ -80,7 +80,7 @@ def visualize(
     pil_image.rotate(270)
     draw = ImageDraw.Draw(pil_image)
     draw.rectangle([txpos, (left+txw, top-txh)], outline=_TEXT_COLOR, fill=_TEXT_COLOR, width=_FONT_THICKNESS)
-    draw.text(txpos, text, font=font, fill=(0,0,0), size=_FONT_SIZE)
+    draw.text((left+txw, top-txh), text, font=font, fill=(0,0,0), size=_FONT_SIZE)
     image = np.array(pil_image)
     print("\n\n", class_name, start_point, end_point, end="\n\n")
     

@@ -46,11 +46,11 @@ def visualize(
     end_point =  detection.bounding_box.bottom, detection.bounding_box.right,
     # cv2.rectangle(image, start_point, end_point, _TEXT_COLOR, 3)
     
-   
+    print(image.size)
     pil_image = Image.fromarray(image)
     
-    # pil_image = ImageOps.mirror(pil_image)
-    # pil_image = pil_image.rotate(90)
+    pil_image = ImageOps.mirror(pil_image)
+    pil_image = pil_image.rotate(90)
     # pil_image = ImageOps.flip(pil_image)
     
     draw = ImageDraw.Draw(pil_image)
@@ -78,8 +78,8 @@ def visualize(
     draw.rectangle([txpos, (left+txw, top-txh)], outline=_TEXT_COLOR, fill=_TEXT_COLOR, width=_FONT_THICKNESS)
     draw.text((left, top-txh), text, font=font, fill=(255,255,255), size=_FONT_SIZE)
     
-    # pil_image = pil_image.rotate(270)
-    # pil_image = ImageOps.mirror(pil_image)
+    pil_image = pil_image.rotate(270)
+    pil_image = ImageOps.mirror(pil_image)
     
     # pil_image = ImageOps.flip(pil_image)
     

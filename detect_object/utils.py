@@ -51,7 +51,7 @@ def visualize(
     
     pil_image = ImageOps.mirror(pil_image)
     pil_image = pil_image.rotate(90, expand=True)
-    # pil_image = ImageOps.flip(pil_image)
+
     
     draw = ImageDraw.Draw(pil_image)
     draw.rectangle((start_point, end_point),outline=_TEXT_COLOR)
@@ -81,7 +81,7 @@ def visualize(
     pil_image = pil_image.rotate(270, expand=True)
     pil_image = ImageOps.mirror(pil_image)
     
-    # pil_image = ImageOps.flip(pil_image)
+
     
 
 

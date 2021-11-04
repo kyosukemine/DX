@@ -73,6 +73,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
 
   # Initialize the object detection model
   options = ObjectDetectorOptions(
+      label_allow_list=['person'],
       num_threads=num_threads,
       score_threshold=0.3,
       max_results=3,

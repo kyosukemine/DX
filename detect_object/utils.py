@@ -76,7 +76,7 @@ def visualize(
     draw.rectangle([txpos, (left+txw, top-txh)], outline=_TEXT_COLOR, fill=_TEXT_COLOR, width=_FONT_THICKNESS)
     draw.text((left, top-txh), text, font=font, fill=(255,255,255), size=_FONT_SIZE)
     
-    # pil_image.rotate(90)
+    pil_image = pil_image.rotate(90)
     pil_image = ImageOps.mirror(pil_image)
     # pil_image = ImageOps.flip(pil_image)
     

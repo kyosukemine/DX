@@ -48,7 +48,7 @@ def visualize(
     
    
     pil_image = Image.fromarray(image)
-    pil_image = ImageOps.mirror(pil_image)
+    # pil_image = ImageOps.mirror(pil_image)
     # pil_image = ImageOps.flip(pil_image)
     # pil_image.rotate(90)
     draw = ImageDraw.Draw(pil_image)

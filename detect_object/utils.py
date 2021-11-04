@@ -65,13 +65,13 @@ def visualize(
     #             _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
     
     
-    font = ImageFont.load_default(size=_FONT_SIZE)
+    font = ImageFont.load_default()
     text = class_name + ' (' + str(probability) + ')'
     left, top = start_point
     txpos = (left, top-_FONT_SIZE-_FONT_THICKNESS//2)
     txw, txh = draw.textsize(text, font=font)
     draw.rectangle([txpos, (left+txw, top)], outline=_TEXT_COLOR, fill=_TEXT_COLOR, width=_FONT_THICKNESS)
-    draw.text(txpos, text, font=font, fill=(0,0,0))
+    draw.text(txpos, text, font=font, fill=(0,0,0), size=_FONT_SIZE)
     
     
     image = np.array(pil_image)

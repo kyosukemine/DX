@@ -48,9 +48,9 @@ def visualize(
     
    
     pil_image = Image.fromarray(image)
-    # pil_image = ImageOps.mirror(pil_image)
+    pil_image = ImageOps.mirror(pil_image)
     # pil_image = ImageOps.flip(pil_image)
-    # pil_image.rotate(270)
+    pil_image.rotate(270)
     draw = ImageDraw.Draw(pil_image)
     draw.rectangle((start_point, end_point),outline=_TEXT_COLOR)
     
@@ -76,9 +76,10 @@ def visualize(
     draw.rectangle([txpos, (left+txw, top-txh)], outline=_TEXT_COLOR, fill=_TEXT_COLOR, width=_FONT_THICKNESS)
     draw.text((left, top-txh), text, font=font, fill=(255,255,255), size=_FONT_SIZE)
     
-    # pil_image = ImageOps.mirror(pil_image)
+    pil_image.rotate(90)
+    pil_image = ImageOps.mirror(pil_image)
     # pil_image = ImageOps.flip(pil_image)
-    # pil_image.rotate(90)
+    
 
 
     image = np.array(pil_image)

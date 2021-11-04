@@ -50,7 +50,7 @@ def visualize(
     pil_image = Image.fromarray(image)
     draw = ImageDraw.Draw(pil_image)
     draw.rectangle((start_point, end_point),outline=_TEXT_COLOR)
-    image = np.array(pil_image)
+    
     
     
 
@@ -64,6 +64,17 @@ def visualize(
     # cv2.putText(image, result_text, text_location, cv2.FONT_HERSHEY_PLAIN,
     #             _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
     
+    
+    font = ImageFont.truetype("arial.ttf", size=textsize)
+    text = class_name + ' (' + str(probability) + ')'
+    left, top = start_point
+    txpos = (left, top-_FONT_SIZE-_FONT_THICKNESS//2)
+    txw, txh = draw.textsize(text, font=font)
+    draw.rectangle([txpos, (left+txw, top)], outline=_TEXT_COLOR, fill=_TEXT_COLOR, width=_FONT_THICKNESS)
+    draw.text(txpos, text, font=font, fill=_TEXT_COLOR)
+    
+    
+    image = np.array(pil_image)
     print("\n\n", class_name, start_point, end_point, end="\n\n")
     
   return image

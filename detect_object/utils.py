@@ -65,7 +65,7 @@ def visualize(
     #             _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
     
     
-    font = ImageFont.truetype("arial.ttf", size=textsize)
+    font = ImageFont.truetype("arial.ttf", size=_FONT_THICKNESS)
     text = class_name + ' (' + str(probability) + ')'
     left, top = start_point
     txpos = (left, top-_FONT_SIZE-_FONT_THICKNESS//2)

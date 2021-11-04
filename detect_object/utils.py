@@ -77,8 +77,9 @@ def visualize(
     draw.text(txpos, text, font=font, fill=(0,0,0), size=_FONT_SIZE)
     
     # pil_image = ImageOps.mirror(pil_image)
-    pil_image = ImageOps.flip(pil_image)
+    # pil_image = ImageOps.flip(pil_image)
     pil_image.rotate(270)
+    pil_image = ImageOps.flip(pil_image)
     image = np.array(pil_image)
     print("\n\n", class_name, start_point, end_point, end="\n\n")
     

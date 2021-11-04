@@ -60,7 +60,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       
   cam.start()
 
-  size = width, height = 320, 320
+  size = width, height = 352, 288
   screen = pygame.display.set_mode(size)
 
   # Visualization parameters

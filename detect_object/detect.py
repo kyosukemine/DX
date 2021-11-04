@@ -60,7 +60,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       
   cam.start()
 
-  size = width, height = 320, 320
+  size = width, height = 352, 288
   screen = pygame.display.set_mode(size)
 
   # Visualization parameters
@@ -99,9 +99,10 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     # image = cv2.flip(image, 1)
     image = cam.get_image()
     screen.fill(BLACK)
-    screen.blit(image, ORIGIN)
+    #screen.blit(image, ORIGIN)
     
     image = pygame.surfarray.array3d(image)
+
 
     # Run object detection estimation using the model.
     detections = detector.detect(image)
@@ -126,6 +127,8 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     #   break
     # cv2.imshow('object_detector', image)
 
+    surf = pygame.surfarray.make_surface(image)
+    screen.blit(surf, ORIGIN)
     pygame.display.flip()
 
   # cap.release()
@@ -174,3 +177,4 @@ def main():
 
 if __name__ == '__main__':
   main()
+

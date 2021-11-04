@@ -46,7 +46,7 @@ def visualize(
     end_point =  detection.bounding_box.bottom, detection.bounding_box.right,
     # cv2.rectangle(image, start_point, end_point, _TEXT_COLOR, 3)
     
-    print(image.size)
+    print(image.shape)
     pil_image = Image.fromarray(image)
     
     pil_image = ImageOps.mirror(pil_image)

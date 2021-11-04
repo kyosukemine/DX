@@ -42,15 +42,15 @@ def visualize(
   """
   for detection in detections:
     # Draw bounding_box
-    start_point = 350-detection.bounding_box.left, 350-detection.bounding_box.top
-    end_point = 350-detection.bounding_box.right, 350-detection.bounding_box.bottom
+    start_point = detection.bounding_box.left,  detection.bounding_box.top
+    end_point = detection.bounding_box.right, detection.bounding_box.bottom
     # cv2.rectangle(image, start_point, end_point, _TEXT_COLOR, 3)
     
    
-    pil_image = Image.fromarray(image)
-    pil_image = ImageOps.mirror(pil_image)
+    pil_image = Image.fromarray(image.T)
+    # pil_image = ImageOps.mirror(pil_image)
     # pil_image = ImageOps.flip(pil_image)
-    pil_image = pil_image.rotate(90)
+    # pil_image = pil_image.rotate(90)
     draw = ImageDraw.Draw(pil_image)
     draw.rectangle((start_point, end_point),outline=_TEXT_COLOR)
     
@@ -76,13 +76,14 @@ def visualize(
     draw.rectangle([txpos, (left+txw, top-txh)], outline=_TEXT_COLOR, fill=_TEXT_COLOR, width=_FONT_THICKNESS)
     draw.text((left, top-txh), text, font=font, fill=(255,255,255), size=_FONT_SIZE)
     
-    pil_image = pil_image.rotate(270)
-    pil_image = ImageOps.mirror(pil_image)
+    # pil_image = pil_image.rotate(270)
+    # pil_image = ImageOps.mirror(pil_image)
     # pil_image = ImageOps.flip(pil_image)
     
 
 
     image = np.array(pil_image)
+    image = image.T
     print("\n\n", class_name, start_point, end_point, end="\n\n")
     
   return image

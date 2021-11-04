@@ -102,6 +102,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     
     image = pygame.surfarray.array3d(image)
 
+
     # Run object detection estimation using the model.
     detections = detector.detect(image)
 
@@ -124,8 +125,9 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     # if cv2.waitKey(1) == 27:
     #   break
     # cv2.imshow('object_detector', image)
-    pil_image = Image.fromarray(image)
-    screen.blit(pil_image, ORIGIN)
+
+    surf = pygame.surfarray.make_surface(image)
+    screen.blit(surf, ORIGIN)
     pygame.display.flip()
 
   # cap.release()

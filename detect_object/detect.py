@@ -55,12 +55,12 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
   pygame.camera.init()
   camlist = pygame.camera.list_cameras()
   if camlist:
-      cam = pygame.camera.Camera(camlist[0],(320,320))
+      cam = pygame.camera.Camera(camlist[0],(640,360))
 
       
   cam.start()
 
-  size = width, height = 352, 288
+  size = width, height = 640, 360
   screen = pygame.display.set_mode(size)
 
   # Visualization parameters
@@ -121,7 +121,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     text_location = (left_margin, row_size)
     # cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
     #             font_size, text_color, font_thickness)
-
+    print(fps_text)
     # Stop the program if the ESC key is pressed.
     # if cv2.waitKey(1) == 27:
     #   break

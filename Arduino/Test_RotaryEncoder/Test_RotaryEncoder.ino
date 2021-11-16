@@ -3,11 +3,13 @@
 #define ENC_A 6
 #define ENC_B 7
 
-bool cur[2];  // current state
+byte bq;      // binary queue
+int acc = 0;  // accumulation
 
 void encRead() {
-  cur[0] = digitalRead(ENC_A);
-  cur[1] = digitalRead(ENC_B);
+  bq = (digitalRead(ENC_A) << 1) | digitalRead(ENC_B);
+  if ((bq & 0x01) ^ (bq >> 1) == 1) acc++;
+  else acc--;
 }
 
 void pcAttachInt(int pin) {
@@ -17,15 +19,16 @@ void pcAttachInt(int pin) {
 
 void setup() {
   Serial.begin(19200);
-  Serial.println("A,B");
+//  Serial.println("A,B");
+  Serial.println("acc");
 
   pcAttachInt(ENC_A);
-  pcAttachInt(ENC_B);
 }
 
 void loop() {
-  Serial.print(cur[0]);
-  Serial.print(',');
-  Serial.print(cur[1]);
-  Serial.println();
+//  Serial.print(cur[0]);
+//  Serial.print(',');
+//  Serial.print(cur[1]);
+//  Serial.println();
+  Serial.println(acc);
 }

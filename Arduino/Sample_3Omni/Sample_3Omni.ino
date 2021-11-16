@@ -27,6 +27,8 @@
 
  */
 
+#define _NAMIKI_MOTOR
+
 #include <MotorWheel.h>
 #include <SONAR.h>
 

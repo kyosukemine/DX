@@ -72,8 +72,8 @@ V1.5	201209	Omni4WD is re-implemented, and now return value of Omni4WD::getSpeed
 	#define  REDUCTION_RATIO 80
 #else
 	#define	 TRIGGER RISING
-	#define  CPR 4
-	#define  DIR_INVERSE
+	#define  CPR 12
+	#define  DIR_INVERSE !
 	#define  REDUCTION_RATIO 64
 #endif
 

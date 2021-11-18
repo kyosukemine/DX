@@ -27,11 +27,14 @@ from pygame.locals import *
 from object_detector import ObjectDetector
 from object_detector import ObjectDetectorOptions
 import utils
+
+
 from control_value import ControlValue
 
+import serial
 
 def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
-        enable_edgetpu: bool, offimage: bool) -> None:
+        enable_edgetpu: bool, offimage: bool, offserial: bool) -> None:
   """Continuously run inference on images acquired from the camera.
 
   Args:
@@ -41,7 +44,8 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     height: The height of the frame captured from the camera.
     num_threads: The number of CPU threads to run the model.
     enable_edgetpu: True/False whether the model is a EdgeTPU model.
-    showimage: True/False Whether to show the image.
+    offimage: True/False Whether to show the image.
+    offserial: True/False Whether to show the erial.
   """
 
   # Variables to calculate FPS
@@ -85,6 +89,9 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
 
   BLACK = (0, 0, 0)
   ORIGIN = (0, 0)
+
+  if not offserial:
+    ser = serial.Serial('/dev/ttyUSB0',19200)
 
   # Continuously capture images from the camera and run inference
   # while cap.isOpened():
@@ -146,6 +153,11 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     print(maxv,b_v1,b_v2,b_v3)
     if maxv != 0:
       print("send")
+      if not offserial:
+        ser.write((maxv).to_bytes(1, byteorder='little', signed=True))
+        ser.write((v1).to_bytes(1, byteorder='little', signed=True))
+        ser.write((v2).to_bytes(1, byteorder='little', signed=True))
+        ser.write((v3).to_bytes(1, byteorder='little', signed=True))
     else:
       print("not send")
 
@@ -196,10 +208,16 @@ def main():
       required=False,
       action='store_true'
       )
+  parser.add_argument(
+      '--offserial',
+      help='Whether to off the serial.',
+      required=False,
+      action='store_true'
+      )
   args = parser.parse_args()
 
   run(args.model, int(args.cameraId), args.frameWidth, args.frameHeight,
-      int(args.numThreads), bool(args.enableEdgeTPU), bool(args.offimage))
+      int(args.numThreads), bool(args.enableEdgeTPU), bool(args.offimage), bool(args.offserial))
 
 
 if __name__ == '__main__':

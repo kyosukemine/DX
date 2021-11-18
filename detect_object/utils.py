@@ -40,6 +40,7 @@ def visualize(
   Returns:
     Image with bounding boxes.
   """
+  (start_point, end_point) =  ((-1,-1),(-1,-1))
   for detection in detections:
     # Draw bounding_box
     start_point = detection.bounding_box.top, detection.bounding_box.left
@@ -88,5 +89,5 @@ def visualize(
     image = np.array(pil_image)
     print("\n\n", class_name, start_point, end_point, end="\n\n")
     
-  return image
+  return image ,(start_point, end_point)
 

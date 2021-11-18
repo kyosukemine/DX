@@ -21,7 +21,7 @@ class ControlValue():
         self.width = image_width
         self.height = image_height
         # self.mode = 
-    def set_velocity(self,rotation_velocity=10,moving_velocity=10):
+    def set_velocity(self,rotation_velocity=10,moving_velocity=10):# rpm
         self.rotation_velocity = rotation_velocity
         self.moving_velocity = moving_velocity
 
@@ -50,7 +50,7 @@ class ControlValue():
             v1 = r
             v2 = r
             v3 = r
-            return v1,v2,v3
+            # return v1,v2,v3
         elif self.mode == "run":
             vy = self.moving_velocity
             vx = 0
@@ -58,9 +58,28 @@ class ControlValue():
             v1 = vx
             v2 = -vx/2 + vy*root3/2
             v3 = -vx/2 - vy*root3/2
-            return v1,v2,v3
+            # return v1,v2,v3
         else:
             v1 = v2 = v3 = 0
-            return v1,v2,v3
+            # return v1,v2,v3
+        self.v1 = v1
+        self.v2 = v2
+        self.v3 = v3
+
+        maxv = max(abs(v1),abs(v2),abs(v3))
+        if maxv != 0:
+            b_v1 = int(127*v1/maxv)
+            b_v2 = int(127*v2/maxv)
+            b_v3 = int(127*v3/maxv)
+        else:
+            b_v1 = b_v2 = b_v3 = 0
+        
+        self.b_v1 = b_v1
+        self.b_v2 = b_v2
+        self.b_v3 = b_v3
+
+        return maxv,b_v1,b_v2,b_v3
+
+    
 
 

@@ -138,10 +138,16 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     topleft,bottomright = detectpoints
     print(topleft,bottomright)
     ConVa = ControlValue(topleft,bottomright,width, height)
+
     ConVa.set_velocity()
     ConVa.detect_mode()
-    v1,v2,v3 = ConVa.get_control_value()
-    print(v1,v2,v3)
+    
+    maxv,b_v1,b_v2,b_v3 = ConVa.get_control_value()
+    print(maxv,b_v1,b_v2,b_v3)
+    if maxv != 0:
+      print("send")
+    else:
+      print("not send")
 
 
 

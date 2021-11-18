@@ -68,9 +68,11 @@ class ControlValue():
 
         maxv = max(abs(v1),abs(v2),abs(v3))
         if maxv != 0:
+            
             b_v1 = int(127*v1/maxv)
             b_v2 = int(127*v2/maxv)
             b_v3 = int(127*v3/maxv)
+            maxv = int(maxv)
         else:
             b_v1 = b_v2 = b_v3 = 0
         

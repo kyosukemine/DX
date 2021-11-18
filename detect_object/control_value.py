@@ -44,7 +44,7 @@ class ControlValue():
             v1 = -r
             v2 = -r
             v3 = -r
-            return v1,v2,v3
+            # return v1,v2,v3
         elif self.mode == "rotate_ccw":
             r =  self.rotation_velocity
             v1 = r

@@ -30,7 +30,7 @@ import utils
 
 
 def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
-        enable_edgetpu: bool) -> None:
+        enable_edgetpu: bool, offimage: bool) -> None:
   """Continuously run inference on images acquired from the camera.
 
   Args:
@@ -40,6 +40,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     height: The height of the frame captured from the camera.
     num_threads: The number of CPU threads to run the model.
     enable_edgetpu: True/False whether the model is a EdgeTPU model.
+    showimage: True/False Whether to show the image.
   """
 
   # Variables to calculate FPS
@@ -61,7 +62,8 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
   cam.start()
 
   size = width, height = 640, 360
-  screen = pygame.display.set_mode(size)
+  if not offimage:
+    screen = pygame.display.set_mode(size)
 
   # Visualization parameters
   row_size = 20  # pixels
@@ -98,7 +100,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     counter += 1
     # image = cv2.flip(image, 1)
     image = cam.get_image()
-    screen.fill(BLACK)
+    # screen.fill(BLACK)
     #screen.blit(image, ORIGIN)
     
     image = pygame.surfarray.array3d(image)
@@ -126,10 +128,10 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     # if cv2.waitKey(1) == 27:
     #   break
     # cv2.imshow('object_detector', image)
-
-    surf = pygame.surfarray.make_surface(image)
-    screen.blit(surf, ORIGIN)
-    pygame.display.flip()
+    if not offimage:
+      surf = pygame.surfarray.make_surface(image)
+      screen.blit(surf, ORIGIN)
+      pygame.display.flip()
 
   # cap.release()
   # cv2.destroyAllWindows()
@@ -169,10 +171,16 @@ def main():
       action='store_true',
       required=False,
       default=False)
+  parser.add_argument(
+      '--offimage',
+      help='Whether to off the image.',
+      required=False,
+      action='store_true'
+      )
   args = parser.parse_args()
 
   run(args.model, int(args.cameraId), args.frameWidth, args.frameHeight,
-      int(args.numThreads), bool(args.enableEdgeTPU))
+      int(args.numThreads), bool(args.enableEdgeTPU), bool(args.offimage))
 
 
 if __name__ == '__main__':

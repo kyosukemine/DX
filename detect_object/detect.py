@@ -27,6 +27,7 @@ from pygame.locals import *
 from object_detector import ObjectDetector
 from object_detector import ObjectDetectorOptions
 import utils
+from control_value import ControlValue
 
 
 def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
@@ -110,7 +111,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     detections = detector.detect(image)
 
     # Draw keypoints and edges on input image
-    image = utils.visualize(image, detections)
+    image, detectpoints = utils.visualize(image, detections)
 
     # Calculate the FPS
     if counter % fps_avg_frame_count == 0:
@@ -132,6 +133,18 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       surf = pygame.surfarray.make_surface(image)
       screen.blit(surf, ORIGIN)
       pygame.display.flip()
+    
+
+    topleft,bottomright = detectpoints
+    print(topleft,bottomright)
+    ConVa = ControlValue(topleft,bottomright,width, height)
+    ConVa.set_velocity()
+    ConVa.detect_mode()
+    v1,v2,v3 = ConVa.get_control_value()
+    print(v1,v2,v3)
+
+
+
 
   # cap.release()
   # cv2.destroyAllWindows()

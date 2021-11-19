@@ -15,6 +15,7 @@
 
 from typing import List
 
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 # import cv2
 import numpy as np
 from object_detector import Detection
@@ -39,11 +40,25 @@ def visualize(
   Returns:
     Image with bounding boxes.
   """
+  (start_point, end_point) =  ((-1,-1),(-1,-1))
   for detection in detections:
     # Draw bounding_box
-    start_point = detection.bounding_box.left, detection.bounding_box.top
-    end_point = detection.bounding_box.right, detection.bounding_box.bottom
+    start_point = detection.bounding_box.top, detection.bounding_box.left
+    end_point =  detection.bounding_box.bottom, detection.bounding_box.right,
     # cv2.rectangle(image, start_point, end_point, _TEXT_COLOR, 3)
+    
+    print(image.shape)
+    pil_image = Image.fromarray(image)
+    
+    pil_image = ImageOps.mirror(pil_image)
+    pil_image = pil_image.rotate(90, expand=True)
+
+    
+    draw = ImageDraw.Draw(pil_image)
+    draw.rectangle((start_point, end_point),outline=_TEXT_COLOR)
+    
+    
+    
 
     # Draw label and score
     category = detection.categories[0]
@@ -55,7 +70,24 @@ def visualize(
     # cv2.putText(image, result_text, text_location, cv2.FONT_HERSHEY_PLAIN,
     #             _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
     
+    
+    font = ImageFont.load_default()
+    text = class_name + ' (' + str(probability) + ')'
+    left, top = start_point
+    txpos = (left, top-_FONT_SIZE-_FONT_THICKNESS//2)
+    txw, txh = draw.textsize(text, font=font)
+    draw.rectangle([txpos, (left+txw, top-txh)], outline=_TEXT_COLOR, fill=_TEXT_COLOR, width=_FONT_THICKNESS)
+    draw.text((left, top-txh), text, font=font, fill=(255,255,255), size=_FONT_SIZE)
+    
+    pil_image = pil_image.rotate(270, expand=True)
+    pil_image = ImageOps.mirror(pil_image)
+    
+
+    
+
+
+    image = np.array(pil_image)
     print("\n\n", class_name, start_point, end_point, end="\n\n")
     
-  return image
+  return image ,(start_point, end_point)
 

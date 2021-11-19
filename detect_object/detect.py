@@ -155,9 +155,9 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       print("send")
       if not offserial:
         ser.write((maxv).to_bytes(1, byteorder='little', signed=True))
-        ser.write((v1).to_bytes(1, byteorder='little', signed=True))
-        ser.write((v2).to_bytes(1, byteorder='little', signed=True))
-        ser.write((v3).to_bytes(1, byteorder='little', signed=True))
+        ser.write((b_v1).to_bytes(1, byteorder='little', signed=True))
+        ser.write((b_v3).to_bytes(1, byteorder='little', signed=True))
+        ser.write((b_v2).to_bytes(1, byteorder='little', signed=True))
     else:
       print("not send")
 

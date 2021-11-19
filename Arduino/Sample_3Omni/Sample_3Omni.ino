@@ -72,24 +72,52 @@ irqISR(irq3,isr3);
 MotorWheel wheel3(3,2,4,5,&irq3);        // Pin3:PWM, Pin2:DIR, Pin4:PhaseA, Pin5:PhaseB
 /******************************************/
 
+const byte byteMax = 127;
+byte inputByte;
+byte rpmMax = 30;
+float rpm1 = 0, rpm2 = 0, rpm3 = 0;
+bool dir1 = DIR_ADVANCE, dir2 = DIR_ADVANCE, dir3 = DIR_ADVANCE;
+
 /******************************************/
-// demo
-void setRPM(int rpm1, int rpm2, int rpm3) {
-    wheel1.setGearedSpeedRPM(rpm1);
-    wheel2.setGearedSpeedRPM(rpm2);
-    wheel3.setGearedSpeedRPM(rpm3);
-    
-    wheel1.PIDRegulate();
-    wheel2.PIDRegulate();
-    wheel3.PIDRegulate();
+// Functions
+float decodeByte() {
+    int i = (int)inputByte;
+    if ((i & 0x80) == 0x80){
+        i ^= 0xFF;
+        i++;
+        i *= -1;
+    }
+    return (float)i * (float)rpmMax / (float)byteMax;
 }
 
-int rpm = -30;
-int tmp = 0;
-int inputByte = 0;
-bool minus = false;
-unsigned long old = 0;
-unsigned long now = 0;
+void readRPM() {
+    if (Serial.available() >= 4) {
+        rpmMax = Serial.read();
+        inputByte = Serial.read();
+        rpm1 = decodeByte();
+        inputByte = Serial.read();
+        rpm2 = decodeByte();
+        inputByte = Serial.read();
+        rpm3 = decodeByte();
+    }
+}
+
+void setCurrDir() {
+    if (rpm1 > 0.0) dir1 = DIR_ADVANCE;
+    else if (rpm1 < 0.0) dir1 = DIR_BACKOFF;
+    if (rpm2 > 0.0) dir2 = DIR_ADVANCE;
+    else if (rpm2  < 0.0) dir2 = DIR_BACKOFF;
+    if (rpm3 > 0.0) dir3 = DIR_ADVANCE;
+    else if (rpm3 < 0.0) dir3 = DIR_BACKOFF;
+}
+
+void setGearedSpeedRPM() {
+    wheel1.setGearedSpeedRPM(rpm1, dir1);
+    wheel2.setGearedSpeedRPM(rpm2, dir2);
+    wheel3.setGearedSpeedRPM(rpm3, dir3);
+}
+/******************************************/
+
 float kc = 0.1, taui = 0.02, taud = 0;
 unsigned int sms = 10;
 
@@ -103,37 +131,19 @@ void setup() {
     
     // SONAR::init(13);
     
-    wheel1.PIDEnable(kc, taui,taud,sms);
-    wheel2.PIDEnable(kc, taui,taud,sms);
-    wheel3.PIDEnable(kc, taui,taud,sms);
+    wheel1.PIDEnable(kc, taui, taud, sms);
+    wheel2.PIDEnable(kc, taui, taud, sms);
+    wheel3.PIDEnable(kc, taui, taud, sms);
 }
 
 /****************************************/
 // loop()
 void loop() {
-    now = millis();
-    if (old == 0) old = now;
-    if (now - old > 5000) {
-        rpm *= -1;
-        old = now;
-    }
-    setRPM(0, rpm, -rpm);
-    Serial.println(wheel2.getGearedSpeedRPM());
-    
-    if (Serial.available() > 0) {
-        inputByte = Serial.read();
-        if (inputByte == '\n') {
-            rpm = tmp;
-            tmp = 0;
-            if (minus) rpm *= -1;
-            minus = false;
-        } else if (inputByte == '-') {
-            minus = true;
-        }
-        else {
-            inputByte -= '0';
-            tmp *= 10;
-            tmp += inputByte;
-        }
-    }
+    readRPM();
+    setCurrDir();
+    setGearedSpeedRPM();
+
+    wheel1.PIDRegulate();
+    wheel2.PIDRegulate();
+    wheel3.PIDRegulate();
 }

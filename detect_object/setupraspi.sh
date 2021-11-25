@@ -16,7 +16,7 @@ fi
 
 # 要確認
 echo "hdmi強制"
-# sed -i s/'#hdmi_force_hotplug=1'/'hdmi_force_hotplug=1'/ /boot/config.txt
+sed -i s/'#hdmi_force_hotplug=1'/'hdmi_force_hotplug=1'/ /boot/config.txt
 # sed -i s/'hdmi_force_hotplug=1'/'#hdmi_force_hotplug=1'/ /boot/config.txt
 echo "hdmi強制完了"
 

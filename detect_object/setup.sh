@@ -9,6 +9,7 @@ fi
 # Install Python dependencies
 python3 -m pip install -r requirements_pypi.txt
 python3 -m pip install -r requirements_tflite.txt
+python3 -m pip install Pillow
 
 # Download TF Lite models
 FILE=${DATA_DIR}/efficientdet_lite0.tflite

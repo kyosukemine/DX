@@ -29,9 +29,12 @@ from object_detector import ObjectDetectorOptions
 import utils
 
 
-from control_value import ControlValue
+from control_value import ControlValue,ControlValue_v1
 
 import serial
+
+
+import time
 
 def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
         enable_edgetpu: bool, offimage: bool, offserial: bool) -> None:
@@ -95,19 +98,23 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
 
   # Continuously capture images from the camera and run inference
   # while cap.isOpened():
+  ConVa = ControlValue_v1()
+  ConVa.set_velocity(2,5)
   while 1:
     # success, image = cap.read()
     # if not success:
     #   sys.exit(
     #       'ERROR: Unable to read from webcam. Please verify your webcam settings.'
     #   )
-
+    time0 = time.time()
     for event in pygame.event.get():
       if event.type == pygame.QUIT: sys.exit()
 
     counter += 1
     # image = cv2.flip(image, 1)
     image = cam.get_image()
+    time1 = time.time()
+    print("撮像---->",(time1-time0)*1000)
     # screen.fill(BLACK)
     #screen.blit(image, ORIGIN)
     
@@ -116,9 +123,13 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
 
     # Run object detection estimation using the model.
     detections = detector.detect(image)
+    time2 = time.time()
+    print("計算---->",(time2-time1)*1000)
 
     # Draw keypoints and edges on input image
     image, detectpoints = utils.visualize(image, detections)
+    
+    
 
     # Calculate the FPS
     if counter % fps_avg_frame_count == 0:
@@ -144,22 +155,22 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
 
     topleft,bottomright = detectpoints
     print(topleft,bottomright)
-    ConVa = ControlValue(topleft,bottomright,width, height)
+    ConVa.cal_center(topleft,bottomright,width, height)
 
-    ConVa.set_velocity()
+    
     ConVa.detect_mode()
     
     maxv,b_v1,b_v2,b_v3 = ConVa.get_control_value()
     print(maxv,b_v1,b_v2,b_v3)
-    if maxv != 0:
-      print("send")
-      if not offserial:
-        ser.write((maxv).to_bytes(1, byteorder='little', signed=True))
-        ser.write((b_v1).to_bytes(1, byteorder='little', signed=True))
-        ser.write((b_v3).to_bytes(1, byteorder='little', signed=True))
-        ser.write((b_v2).to_bytes(1, byteorder='little', signed=True))
-    else:
-      print("not send")
+    # if maxv != 0:
+    #   print("send")
+    if not offserial:
+      ser.write((maxv).to_bytes(1, byteorder='little', signed=True))
+      ser.write((b_v1).to_bytes(1, byteorder='little', signed=True))
+      ser.write((b_v3).to_bytes(1, byteorder='little', signed=True))
+      ser.write((b_v2).to_bytes(1, byteorder='little', signed=True))
+    # else:
+    #   print("not send")
 
 
 

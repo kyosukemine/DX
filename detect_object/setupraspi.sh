@@ -24,6 +24,13 @@ echo "hdmi強制完了"
 
 # IP固定
 echo "IP固定設定"
+echo "初期化"
+sed -i '/interface wlan0/d' /etc/dhcpcd.conf
+sed -i '/static ip_address=/d' /etc/dhcpcd.conf
+sed -i '/static routers=/d' /etc/dhcpcd.conf
+sed -i '/static domain_name_servers/d' /etc/dhcpcd.conf
+
+
 IPaddress=`hostname -I`
 echo $IPaddress
 arr=( `echo ${IPaddress} | tr -s '.' ' '` )

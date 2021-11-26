@@ -15,7 +15,7 @@ fi
 
 
 # 要確認
-echo "hdmi強制"
+echo "hdmi強制設定"
 sed -i s/'#hdmi_force_hotplug=1'/'hdmi_force_hotplug=1'/ /boot/config.txt
 # sed -i s/'hdmi_force_hotplug=1'/'#hdmi_force_hotplug=1'/ /boot/config.txt
 echo "hdmi強制完了"
@@ -23,6 +23,7 @@ echo "hdmi強制完了"
 # apt-get update --allow-releaseinfo-change
 
 # IP固定
+echo "IP固定設定"
 IPaddress=`hostname -I`
 echo $IPaddress
 arr=( `echo ${IPaddress} | tr -s '.' ' '` )

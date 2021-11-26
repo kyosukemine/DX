@@ -4,14 +4,14 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return "<html><h3>実習資料</h3><a href='/export/raspberrypi'>ダウンロードraspberry用</a><br><br><br><br><a href='/export/raspberrypi'>ダウンロードPC用</a></html>"
+    return "<html><h3>実習資料</h3><a href='/export/raspberrypi'>ダウンロード RaspberryPi用</a><br><br><br><br><a href='/export/pc'>ダウンロード PC用</a></html>"
 
 
 @app.route("/export/raspberrypi")
 def export_action_raspi():
     filename = "送りたいファイルのパス/ラズパイ用"
     return send_file(
-        path=filename,
+        filename,
         as_attachment=True
     )
 
@@ -19,7 +19,7 @@ def export_action_raspi():
 def export_action_pc():
     filename = "送りたいファイルのパス/パソコン用"
     return send_file(
-        path=filename,
+        filename,
         as_attachment=True
     )
 

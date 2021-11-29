@@ -1,4 +1,4 @@
-/********************************************************************/
+ /********************************************************************/
 /*
 
 
@@ -96,8 +96,9 @@ void setGearedSpeedRPM() {
 float kc = 0.1, taui = 0.02, taud = 0.0;
 unsigned int sms = 10;
 int cnt = 0;
-unsigned long ms = 0;
-unsigned long stime = 1000;
+unsigned long old = 0;
+unsigned long interval = 1000;
+float baserpm = 10.0;
 
 /*****************************************/
 // setup
@@ -116,40 +117,40 @@ void setup() {
     rpm2 = -11.6;
     rpm3 = 11.6;
     cnt = 0;
-    ms = millis();
+    old = millis();
 }
 
 /****************************************/
 // loop
 void loop() {
-    if (ms - millis() > stime){
-        if (cnt == 0) {
-            rpm1 = 10.0;
-            rpm2 = -20.0;
-            rpm3 = 20.0;
-        } else if (cnt == 1) {
-            rpm1 = 0.0;
-            rpm2 = -11.6;
-            rpm3 = 11.6;
-        } else if (cnt == 2) {
-            rpm1 = -10.0;
-            rpm2 = 20.0;
-            rpm3 = -20.0;
-        } else if (cnt == 3) {
-            rpm1 = 0.0;
-            rpm2 = 11.6;
-            rpm3 = -11.6;
+    if (millis() - old > interval){
+        if (cnt % 2 == 0) {
+            rpm1 = 0;
+            rpm2 = 0;
+            rpm3 = 0;
+        } else {
+            if (cnt / 2 == 0) {
+                rpm1 = baserpm;
+                rpm2 = -baserpm * 0.5;
+                rpm3 = -baserpm * 0.5;
+            } else if (cnt / 2 == 1) {
+                rpm1 = 0.0;
+                rpm2 = baserpm * 1.16;
+                rpm3 = -baserpm * 1.16;
+            } else if (cnt / 2 == 2) {
+                rpm1 = -baserpm;
+                rpm2 = baserpm * 0.5;
+                rpm3 = baserpm * 0.5;
+            } else if (cnt / 2 == 3) {
+                rpm1 = 0.0;
+                rpm2 = -baserpm * 1.16;
+                rpm3 = baserpm * 1.16;
+            }
         }
-        ms = millis();
+        old = millis();
         cnt++;
-        cnt %= 4;
+        cnt %= 8;
     }
-//    Serial.print(, DEC);
-//    Serial.print(',');
-//    Serial.print(rpm2, DEC);
-//    Serial.print(',');
-//    Serial.print(rpm3, DEC);
-    Serial.println(ms - millis());
 
     setCurrDir();
     setGearedSpeedRPM();

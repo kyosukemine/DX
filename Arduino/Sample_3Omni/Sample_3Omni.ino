@@ -75,7 +75,7 @@ MotorWheel wheel3(3,2,4,5,&irq3);        // Pin3:PWM, Pin2:DIR, Pin4:PhaseA, Pin
 const byte byteMax = 127;
 byte inputByte;
 byte rpmMax = 30;
-float rpm1 = 0, rpm2 = 0, rpm3 = 0;
+float rpm1 = 0.0, rpm2 = 0.0, rpm3 = 0.0;
 bool dir1 = DIR_ADVANCE, dir2 = DIR_ADVANCE, dir3 = DIR_ADVANCE;
 
 /******************************************/
@@ -118,7 +118,7 @@ void setGearedSpeedRPM() {
 }
 /******************************************/
 
-float kc = 0.1, taui = 0.02, taud = 0;
+float kc = 0.1, taui = 0.02, taud = 0.0;
 unsigned int sms = 10;
 
 /*****************************************/
@@ -128,9 +128,9 @@ void setup() {
     TCCR2B=TCCR2B&0xf8|0x01;    // Pin3,Pin11 PWM 31250Hz    
 
     Serial.begin(19200);
-    
+
     // SONAR::init(13);
-    
+
     wheel1.PIDEnable(kc, taui, taud, sms);
     wheel2.PIDEnable(kc, taui, taud, sms);
     wheel3.PIDEnable(kc, taui, taud, sms);
@@ -140,6 +140,7 @@ void setup() {
 // loop()
 void loop() {
     readRPM();
+    
     setCurrDir();
     setGearedSpeedRPM();
 

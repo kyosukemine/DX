@@ -23,15 +23,17 @@ import pygame.camera
 from pygame.locals import *
 
 
-# import cv2
+# 物体検出モジュール
 from object_detector import ObjectDetector
 from object_detector import ObjectDetectorOptions
 import utils
 
+# モータ制御モジュール
+from control_value import ControlValue_v1
 
-from control_value import ControlValue,ControlValue_v1
-
+# シリアル通信モジュール
 import serial
+
 
 
 import time
@@ -51,14 +53,11 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     offserial: True/False Whether to show the erial.
   """
 
-  # Variables to calculate FPS
+
   counter, fps = 0, 0
   start_time = time.time()
 
-  # Start capturing video input from the camera
-  # cap = cv2.VideoCapture(camera_id)
-  # cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-  # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
 
   pygame.init()
   pygame.camera.init()
@@ -73,7 +72,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
   if not offimage:
     screen = pygame.display.set_mode(size)
 
-  # Visualization parameters
+
   row_size = 20  # pixels
   left_margin = 24  # pixels
   text_color = (0, 0, 255)  # red
@@ -90,33 +89,27 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       enable_edgetpu=enable_edgetpu)
   detector = ObjectDetector(model_path=model, options=options)
 
-  BLACK = (0, 0, 0)
   ORIGIN = (0, 0)
 
   if not offserial:
     ser = serial.Serial('/dev/ttyUSB0',19200)
 
   # Continuously capture images from the camera and run inference
-  # while cap.isOpened():
+
   ConVa = ControlValue_v1()
   ConVa.set_velocity(2,5)
   while 1:
-    # success, image = cap.read()
-    # if not success:
-    #   sys.exit(
-    #       'ERROR: Unable to read from webcam. Please verify your webcam settings.'
-    #   )
+
     time0 = time.time()
     for event in pygame.event.get():
       if event.type == pygame.QUIT: sys.exit()
 
     counter += 1
-    # image = cv2.flip(image, 1)
+
     image = cam.get_image()
     time1 = time.time()
     print("撮像---->",(time1-time0)*1000)
-    # screen.fill(BLACK)
-    #screen.blit(image, ORIGIN)
+
     
     image = pygame.surfarray.array3d(image)
 
@@ -140,13 +133,9 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     # Show the FPS
     fps_text = 'FPS = {:.1f}'.format(fps)
     text_location = (left_margin, row_size)
-    # cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
-    #             font_size, text_color, font_thickness)
+
     print(fps_text)
-    # Stop the program if the ESC key is pressed.
-    # if cv2.waitKey(1) == 27:
-    #   break
-    # cv2.imshow('object_detector', image)
+
     if not offimage:
       surf = pygame.surfarray.make_surface(image)
       screen.blit(surf, ORIGIN)
@@ -162,21 +151,15 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     
     maxv,b_v1,b_v2,b_v3 = ConVa.get_control_value()
     print(maxv,b_v1,b_v2,b_v3)
-    # if maxv != 0:
-    #   print("send")
+
     if not offserial:
       ser.write((maxv).to_bytes(1, byteorder='little', signed=True))
       ser.write((b_v1).to_bytes(1, byteorder='little', signed=True))
       ser.write((b_v3).to_bytes(1, byteorder='little', signed=True))
       ser.write((b_v2).to_bytes(1, byteorder='little', signed=True))
-    # else:
-    #   print("not send")
 
 
 
-
-  # cap.release()
-  # cv2.destroyAllWindows()
 
 
 def main():

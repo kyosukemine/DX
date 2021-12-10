@@ -73,11 +73,11 @@ MotorWheel wheel3(3,2,4,5,&irq3);        // Pin3:PWM, Pin2:DIR, Pin4:PhaseA, Pin
 /******************************************/
 
 const byte byteMax = 127;
-const byte rpmMax = 30;
 const float kc = 0.1, taui = 0.02, taud = 0.0;
 const unsigned int sms = 10;
 
-byte inputByte;
+byte rpmMax = 30;
+byte inputByte = 0;
 float rpm1 = 0.0, rpm2 = 0.0, rpm3 = 0.0;
 bool dir1 = DIR_ADVANCE, dir2 = DIR_ADVANCE, dir3 = DIR_ADVANCE;
 

@@ -110,21 +110,21 @@ void loop() {
             rpm3 = 0.0;
         } else {
             if (cnt / 2 == 0) {
-                rpm1 = baserpm;
-                rpm2 = -baserpm * 0.5;
-                rpm3 = -baserpm * 0.5;
-            } else if (cnt / 2 == 1) {
-                rpm1 = 0.0;
-                rpm2 = baserpm * 1.16;
-                rpm3 = -baserpm * 1.16;
-            } else if (cnt / 2 == 2) {
-                rpm1 = -baserpm;
-                rpm2 = baserpm * 0.5;
-                rpm3 = baserpm * 0.5;
-            } else if (cnt / 2 == 3) {
                 rpm1 = 0.0;
                 rpm2 = -baserpm * 1.16;
                 rpm3 = baserpm * 1.16;
+            } else if (cnt / 2 == 1) {
+                rpm1 = baserpm;
+                rpm2 = -baserpm * 0.5;
+                rpm3 = -baserpm * 0.5;
+            } else if (cnt / 2 == 2) {
+                rpm1 = 0.0;
+                rpm2 = baserpm * 1.16;
+                rpm3 = -baserpm * 1.16;
+            } else if (cnt / 2 == 3) {
+                rpm1 = -baserpm;
+                rpm2 = baserpm * 0.5;
+                rpm3 = baserpm * 0.5;
             }
         }
         old = millis();

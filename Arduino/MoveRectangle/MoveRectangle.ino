@@ -30,38 +30,9 @@
 #define _NAMIKI_MOTOR
 
 #include <MotorWheel.h>
-#include <SONAR.h>
-
-/******************************************/
-// SONAR
-
-SONAR sonar11(0x11),sonar12(0x12),sonar13(0x13);
-
-unsigned short distBuf[3];
-void sonarsUpdate() {
-    static unsigned char sonarCurr=1;
-    if(sonarCurr==3) sonarCurr=1;
-    else ++sonarCurr;
-    if(sonarCurr==1) {        
-        distBuf[1]=sonar12.getDist();        
-        sonar12.trigger(); 
-        sonar12.showDat();       
-    } else if(sonarCurr==2) {
-        distBuf[2]=sonar13.getDist();
-        sonar13.trigger();
-        sonar13.showDat();
-    } else {
-        distBuf[0]=sonar11.getDist();
-        sonar11.trigger();
-        sonar11.showDat();
-    }
-}
-
-/*********************************************/
 
 /*******************************************/
 // Motors
-
 irqISR(irq1,isr1);
 MotorWheel wheel1(9,8,6,7,&irq1);        // Pin9:PWM, Pin8:DIR, Pin6:PhaseA, Pin7:PhaseB
 
@@ -72,11 +43,30 @@ irqISR(irq3,isr3);
 MotorWheel wheel3(3,2,4,5,&irq3);        // Pin3:PWM, Pin2:DIR, Pin4:PhaseA, Pin5:PhaseB
 /******************************************/
 
+const float kc = 0.1, taui = 0.02, taud = 0.0;
+const unsigned int sms = 10;
+const unsigned long interval = 1000;
+const float baserpm = 10.0;
+
+int cnt = 0;
+unsigned long old = 0;
 float rpm1 = 0.0, rpm2 = 0.0, rpm3 = 0.0;
 bool dir1 = DIR_ADVANCE, dir2 = DIR_ADVANCE, dir3 = DIR_ADVANCE;
 
 /******************************************/
 // Functions
+void PIDEnable() {
+    wheel1.PIDEnable(kc, taui, taud, sms);
+    wheel2.PIDEnable(kc, taui, taud, sms);
+    wheel3.PIDEnable(kc, taui, taud, sms);
+}
+
+void PIDRegulate() {
+    wheel1.PIDRegulate();
+    wheel2.PIDRegulate();
+    wheel3.PIDRegulate();
+}
+
 void setCurrDir() {
     if (rpm1 > 0.0) dir1 = DIR_ADVANCE;
     else if (rpm1 < 0.0) dir1 = DIR_BACKOFF;
@@ -87,18 +77,11 @@ void setCurrDir() {
 }
 
 void setGearedSpeedRPM() {
-    wheel1.setGearedSpeedRPM(rpm1, dir1);
-    wheel2.setGearedSpeedRPM(rpm2, dir2);
-    wheel3.setGearedSpeedRPM(rpm3, dir3);
+    wheel1.setGearedSpeedRPM(abs(rpm1), dir1);
+    wheel2.setGearedSpeedRPM(abs(rpm2), dir2);
+    wheel3.setGearedSpeedRPM(abs(rpm3), dir3);
 }
 /******************************************/
-
-float kc = 0.1, taui = 0.02, taud = 0.0;
-unsigned int sms = 10;
-int cnt = 0;
-unsigned long old = 0;
-unsigned long interval = 1000;
-float baserpm = 10.0;
 
 /*****************************************/
 // setup
@@ -113,9 +96,6 @@ void setup() {
     wheel2.PIDEnable(kc, taui, taud, sms);
     wheel3.PIDEnable(kc, taui, taud, sms);
 
-    rpm1 = 0.0;
-    rpm2 = -11.6;
-    rpm3 = 11.6;
     cnt = 0;
     old = millis();
 }
@@ -125,37 +105,33 @@ void setup() {
 void loop() {
     if (millis() - old > interval){
         if (cnt % 2 == 0) {
-            rpm1 = 0;
-            rpm2 = 0;
-            rpm3 = 0;
+            rpm1 = 0.0;
+            rpm2 = 0.0;
+            rpm3 = 0.0;
         } else {
             if (cnt / 2 == 0) {
-                rpm1 = baserpm;
-                rpm2 = -baserpm * 0.5;
-                rpm3 = -baserpm * 0.5;
-            } else if (cnt / 2 == 1) {
-                rpm1 = 0.0;
-                rpm2 = baserpm * 1.16;
-                rpm3 = -baserpm * 1.16;
-            } else if (cnt / 2 == 2) {
-                rpm1 = -baserpm;
-                rpm2 = baserpm * 0.5;
-                rpm3 = baserpm * 0.5;
-            } else if (cnt / 2 == 3) {
                 rpm1 = 0.0;
                 rpm2 = -baserpm * 1.16;
                 rpm3 = baserpm * 1.16;
+            } else if (cnt / 2 == 1) {
+                rpm1 = baserpm;
+                rpm2 = -baserpm * 0.5;
+                rpm3 = -baserpm * 0.5;
+            } else if (cnt / 2 == 2) {
+                rpm1 = 0.0;
+                rpm2 = baserpm * 1.16;
+                rpm3 = -baserpm * 1.16;
+            } else if (cnt / 2 == 3) {
+                rpm1 = -baserpm;
+                rpm2 = baserpm * 0.5;
+                rpm3 = baserpm * 0.5;
             }
         }
         old = millis();
         cnt++;
         cnt %= 8;
     }
-
     setCurrDir();
     setGearedSpeedRPM();
-
-    wheel1.PIDRegulate();
-    wheel2.PIDRegulate();
-    wheel3.PIDRegulate();
+    PIDRegulate();
 }

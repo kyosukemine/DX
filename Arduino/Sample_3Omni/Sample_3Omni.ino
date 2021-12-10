@@ -140,8 +140,11 @@ void setup() {
     TCCR2B=TCCR2B&0xf8|0x01;    // Pin3,Pin11 PWM 31250Hz
 
     Serial.begin(19200);
-
+    
     PIDEnable();
+    rpm1 = 0.0;
+    rpm2 = 0.0;
+    rpm3 = 0.0;
 }
 
 /****************************************/

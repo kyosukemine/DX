@@ -73,8 +73,11 @@ MotorWheel wheel3(3,2,4,5,&irq3);        // Pin3:PWM, Pin2:DIR, Pin4:PhaseA, Pin
 /******************************************/
 
 const byte byteMax = 127;
+const byte rpmMax = 30;
+const float kc = 0.1, taui = 0.02, taud = 0.0;
+const unsigned int sms = 10;
+
 byte inputByte;
-byte rpmMax = 30;
 float rpm1 = 0.0, rpm2 = 0.0, rpm3 = 0.0;
 bool dir1 = DIR_ADVANCE, dir2 = DIR_ADVANCE, dir3 = DIR_ADVANCE;
 
@@ -102,6 +105,18 @@ void readRPM() {
     }
 }
 
+void PIDEnable() {
+    wheel1.PIDEnable(kc, taui, taud, sms);
+    wheel2.PIDEnable(kc, taui, taud, sms);
+    wheel3.PIDEnable(kc, taui, taud, sms);
+}
+
+void PIDRegulate() {
+    wheel1.PIDRegulate();
+    wheel2.PIDRegulate();
+    wheel3.PIDRegulate();
+}
+
 void setCurrDir() {
     if (rpm1 > 0.0) dir1 = DIR_ADVANCE;
     else if (rpm1 < 0.0) dir1 = DIR_BACKOFF;
@@ -112,39 +127,28 @@ void setCurrDir() {
 }
 
 void setGearedSpeedRPM() {
-    wheel1.setGearedSpeedRPM(rpm1, dir1);
-    wheel2.setGearedSpeedRPM(rpm2, dir2);
-    wheel3.setGearedSpeedRPM(rpm3, dir3);
+    wheel1.setGearedSpeedRPM(abs(rpm1), dir1);
+    wheel2.setGearedSpeedRPM(abs(rpm2), dir2);
+    wheel3.setGearedSpeedRPM(abs(rpm3), dir3);
 }
 /******************************************/
-
-float kc = 0.1, taui = 0.02, taud = 0.0;
-unsigned int sms = 10;
 
 /*****************************************/
 // setup()
 void setup() {
     TCCR1B=TCCR1B&0xf8|0x01;    // Pin9,Pin10 PWM 31250Hz
-    TCCR2B=TCCR2B&0xf8|0x01;    // Pin3,Pin11 PWM 31250Hz    
+    TCCR2B=TCCR2B&0xf8|0x01;    // Pin3,Pin11 PWM 31250Hz
 
     Serial.begin(19200);
 
-    // SONAR::init(13);
-
-    wheel1.PIDEnable(kc, taui, taud, sms);
-    wheel2.PIDEnable(kc, taui, taud, sms);
-    wheel3.PIDEnable(kc, taui, taud, sms);
+    PIDEnable();
 }
 
 /****************************************/
 // loop()
 void loop() {
     readRPM();
-    
     setCurrDir();
     setGearedSpeedRPM();
-
-    wheel1.PIDRegulate();
-    wheel2.PIDRegulate();
-    wheel3.PIDRegulate();
+    PIDRegulate();
 }

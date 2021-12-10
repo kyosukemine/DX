@@ -1,3 +1,5 @@
+#define _NAMIKI_MOTOR
+
 // ヘッダファイルのインクルード
 #include <MotorWheel.h>
 #include <SONAR.h>
@@ -42,12 +44,14 @@ MotorWheel wheel3(3,2,4,5,&irq3);        // Pin3:PWM, Pin2:DIR, Pin4:PhaseA, Pin
 const byte byteMax = 127;
 const float kc = 0.1, taui = 0.02, taud = 0.0;  // 
 const unsigned int sms = 10;                    // サンプリング周期
-const unsigned short threshDist = 20            // 停止する距離の閾値[cm]
+const unsigned short threshDist = 20;           // 停止する距離の閾値[cm]
+const unsigned int interval = 10;
 
 byte inputByte;
 byte rpmMax = 30;
 float rpm1 = 0.0, rpm2 = 0.0, rpm3 = 0.0;
 bool dir1 = DIR_ADVANCE, dir2 = DIR_ADVANCE, dir3 = DIR_ADVANCE;
+unsigned int old = 0;
 
 /******************************************/
 // Functions
@@ -109,10 +113,10 @@ void setup() {
     TCCR2B=TCCR2B&0xf8|0x01;    // Pin3,Pin11 PWM 31250Hz
 
     PIDEnable();
-
     rpm1 = 0.0;
-    rpm2 = -11.6;
-    rpm3 = 11.6;
+    rpm2 = 0.0;
+    rpm3 = 0.0;
+    old = millis();
 }
 
 /****************************************/
@@ -120,10 +124,17 @@ void setup() {
 void loop() {
     sonarsUpdate();
 
-    if (distBuf[0] < threshDist) {
-        rpm1 = 0.0;
-        rpm2 = 0.0;
-        rpm3 = 0.0;
+    if (millis() - old > interval) {
+        if (distBuf[0] <= threshDist) {
+            rpm1 = 0.0;
+            rpm2 = 0.0;
+            rpm3 = 0.0;
+        } else {
+            rpm1 = 0.0;
+            rpm2 = -11.6;
+            rpm3 = 11.6;
+        }
+        old = millis();
     }
 
     setCurrDir();

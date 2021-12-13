@@ -28,7 +28,6 @@
  */
 
 #define _NAMIKI_MOTOR
-
 #include <MotorWheel.h>
 
 /*******************************************/
@@ -90,11 +89,7 @@ void setup() {
     TCCR1B=TCCR1B&0xf8|0x01;    // Pin9,Pin10 PWM 31250Hz
     TCCR2B=TCCR2B&0xf8|0x01;    // Pin3,Pin11 PWM 31250Hz
 
-    Serial.begin(19200);
-
-    wheel1.PIDEnable(kc, taui, taud, sms);
-    wheel2.PIDEnable(kc, taui, taud, sms);
-    wheel3.PIDEnable(kc, taui, taud, sms);
+    PIDEnable();
 
     cnt = 0;
     old = millis();

@@ -56,8 +56,8 @@ class MotorController():
             vtheta: counterclockwise positive, clockwise positive
         """
         self.v1 = -vx - vtheta
-        self.v2 = 0.5 * vx - 3**(0.5) * 0.5 * vy - vtheta
-        self.v3 = 0.5 * vx + 3**(0.5) * 0.5 * vy - vtheta
+        self.v2 = 0.5 * vx + 3**(0.5) * 0.5 * vy - vtheta
+        self.v3 = 0.5 * vx - 3**(0.5) * 0.5 * vy - vtheta
 
     def encode_rpms(self, v1, v2, v3):
         maxv = max(abs(v1), abs(v2), abs(v3))
@@ -81,11 +81,10 @@ class MotorController():
 
 def main():
     baserpm = 10
-    time_thresh = 0.5   # [s]
+    interval = 0.1   # [s]
     time_new = time.time()
     time_old = time_new
-    key = '0'
-    key_old = key
+    key = ''
 
     try:
         kr = KeyboardReader()
@@ -94,30 +93,27 @@ def main():
             time_new = time.time()
             if kr.kbhit():
                 key = kr.getch()
-                print(f'key: {key}')
-                if (key != key_old):
-                    if key == 27:   # ESC
-                        break
-                    elif key == 'w':    # advance
-                        ms.set_rpms(0, baserpm, 0)
-                    elif key == 'a':    # left
-                        ms.set_rpms(-baserpm, 0, 0)
-                    elif key == 's':    # backoff
-                        ms.set_rpms(0, -baserpm, 0)
-                    elif key == 'd':    # right
-                        ms.set_rpms(baserpm, 0, 0)
-                    elif key == 'q':    # turn left
-                        ms.set_rpms(-baserpm, -baserpm, -baserpm)
-                    elif key == 'e':    # turn right
-                        ms.set_rpms(baserpm, baserpm, baserpm)
-                    ms.write_bytes()
+                if ord(key) == 27:  # ESC
+                    break
 
-            if time_new - time_old > time_thresh:
-                ms.set_rpms(0, 0, 0)
+            if (time_new - time_old > interval):
+                if key == 'w':    # advance
+                    ms.set_rpms(0, baserpm, 0)
+                elif key == 'a':    # left
+                    ms.set_rpms(-baserpm, 0, 0)
+                elif key == 's':    # backoff
+                    ms.set_rpms(0, -baserpm, 0)
+                elif key == 'd':    # right
+                    ms.set_rpms(baserpm, 0, 0)
+                elif key == 'q':    # turn left
+                    ms.set_rpms(0, 0, baserpm)
+                elif key == 'e':    # turn right
+                    ms.set_rpms(0, 0, -baserpm)
+                else:
+                    ms.set_rpms(0, 0, 0)
                 ms.write_bytes()
-
-            key_old = key
-            time_old = time_new
+                key = ''
+                time_old = time_new
     finally:
         ms.set_rpms(0, 0, 0)
         ms.write_bytes()

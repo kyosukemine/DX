@@ -41,42 +41,18 @@ irqISR(irq3,isr3);
 MotorWheel wheel3(3,2,4,5,&irq3);        // Pin3:PWM, Pin2:DIR, Pin4:PhaseA, Pin5:PhaseB
 /******************************************/
 
-const byte byteMax = 127;
-const float kc = 0.1, taui = 0.02, taud = 0.0;  // 
+const float kc = 0.1, taui = 0.02, taud = 0.02;  // PID制御のパラメータ
 const unsigned int sms = 10;                    // サンプリング周期
 const unsigned short threshDist = 20;           // 停止する距離の閾値[cm]
 const unsigned int interval = 10;
+const float baserpm = 5;
 
-byte inputByte;
-byte rpmMax = 30;
 float rpm1 = 0.0, rpm2 = 0.0, rpm3 = 0.0;
 bool dir1 = DIR_ADVANCE, dir2 = DIR_ADVANCE, dir3 = DIR_ADVANCE;
 unsigned int old = 0;
 
 /******************************************/
 // Functions
-float decodeByte() {
-    int i = (int)inputByte;
-    if ((i & 0x80) == 0x80){
-        i ^= 0xFF;
-        i++;
-        i *= -1;
-    }
-    return (float)i * (float)rpmMax / (float)byteMax;
-}
-
-void readRPM() {
-    if (Serial.available() >= 4) {
-        rpmMax = Serial.read();
-        inputByte = Serial.read();
-        rpm1 = decodeByte();
-        inputByte = Serial.read();
-        rpm2 = decodeByte();
-        inputByte = Serial.read();
-        rpm3 = decodeByte();
-    }
-}
-
 void PIDEnable() {
     wheel1.PIDEnable(kc, taui, taud, sms);
     wheel2.PIDEnable(kc, taui, taud, sms);
@@ -131,8 +107,8 @@ void loop() {
             rpm3 = 0.0;
         } else {
             rpm1 = 0.0;
-            rpm2 = -11.6;
-            rpm3 = 11.6;
+            rpm2 = -1.16 * baserpm;
+            rpm3 = 1.16 * baserpm;
         }
         old = millis();
     }

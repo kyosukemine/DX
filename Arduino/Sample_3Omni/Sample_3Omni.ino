@@ -102,7 +102,9 @@ void readRPM() {
         rpm2 = decodeByte();
         inputByte = Serial.read();
         rpm3 = decodeByte();
+        while (Serial.available() > 0) Serial.read();
     }
+    
 }
 
 void PIDEnable() {
